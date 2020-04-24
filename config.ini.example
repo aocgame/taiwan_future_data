@@ -1,0 +1,13 @@
+; 把这个文件另存为 config.ini
+
+[base]
+dir=D:/Downloads
+pull_dir=TX_zip
+germ_file=TXF_germ.csv
+parse_file=TXF_minute.csv
+
+[db]
+username=root
+password=
+ip=127.0.0.1
+name=stock

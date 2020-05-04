@@ -1,4 +1,4 @@
-; 把这个文件另存为 config.ini
+; 把这个文件另存为 config.ini 并把这行注释删除
 
 [base]
 dir=D:/Downloads

@@ -38,15 +38,17 @@ class ExchangeInfosSchema(Base):
     id = Column(TINYINT(1, unsigned=True), comment='主键', primary_key=True)
     name = Column(String(50), comment='交易所名称', nullable=False)
     symbol = Column(String(50), comment='交易所代号', nullable=False)
+    desc = Column(String(50), comment='描述', nullable=False)
     timezone = Column(String(50), comment='时区', nullable=False)
     created_at = Column(TIMESTAMP, comment='创建时间', nullable=False, server_default=text('CURRENT_TIMESTAMP'))
     updated_at = Column(TIMESTAMP, comment='更新时间', nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
 
     def __repr__(self):
-        return "<ExchangeInfosSchema(id='%s', name='%s', symbol='%s', timezone'%s', created_at'%s', updated_at'%s')>" % (
+        return "<ExchangeInfosSchema(id='%s', name='%s', symbol='%s', desc='%s', timezone'%s', created_at'%s', updated_at'%s')>" % (
             self.id,
             self.name,
             self.symbol,
+            self.desc,
             self.timezone,
             self.created_at,
             self.updated_at
@@ -66,14 +68,14 @@ class ExchangeGoodsInfosSchema(Base):
 
     id = Column(MEDIUMINT(8, unsigned=True), comment='主键', primary_key=True)
     exchange_info_id = Column(TINYINT(1, unsigned=True), ForeignKey('exchange_infos.id'), comment='交易所ID', nullable=False)
+    name = Column(String(50), comment='注释')
     symbol = Column(String(10), comment='商品代号', nullable=False)
     type = Column(ENUM(EnumExchangeGoodsInfoType), comment='交易商品类型', nullable=False)
-    description = Column(String(50), comment='注释')
     session = Column(CHAR(9), comment='每日交易时间(HHmm-HHmm)', nullable=False)
     intermission = Column(String(50), comment='中场休息时间(HHmm-HHmm,...)', nullable=False)
     minmov = Column(MEDIUMINT(8, unsigned=True), comment='最小波动价格', nullable=False, server_default=text('1'))
     pricescale = Column(MEDIUMINT(8, unsigned=True), comment='价格精度(最小可能价格变动=minmov/pricescale)', nullable=False)
-    minmove2 = Column(MEDIUMINT(8, unsigned=True), comment='价格变动的子精度', nullable=False, server_default=text('0'))
+    minmov2 = Column(MEDIUMINT(8, unsigned=True), comment='价格变动的子精度', nullable=False, server_default=text('0'))
     exectime_t1 = Column(TIMESTAMP, comment='1分钟进度', nullable=False, server_default=text('0'))
     exectime_h1 = Column(TIMESTAMP, comment='1小时进度', nullable=False, server_default=text('0'))
     exectime_d1 = Column(TIMESTAMP, comment='1天进度', nullable=False, server_default=text('0'))
@@ -85,17 +87,17 @@ class ExchangeGoodsInfosSchema(Base):
     user = relationship("ExchangeInfosSchema", backref=backref('exchange_goods_infos'))
 
     def __repr__(self):
-        return "<ExchangeGoodsInfosSchema(id='%s', exchange_info_id='%s', symbol='%s', type='%s', description='%s', session='%s', intermission='%s', minmov='%s', pricescale='%s', minmove2='%s', exectime_t1='%s', exectime_h1='%s', exectime_d1='%s', exectime_m1='%s', exectime_y1='%s', created_at='%s', updated_at='%s')>" % (
+        return "<ExchangeGoodsInfosSchema(id='%s', exchange_info_id='%s', name='%s', symbol='%s', type='%s', session='%s', intermission='%s', minmov='%s', pricescale='%s', minmov2='%s', exectime_t1='%s', exectime_h1='%s', exectime_d1='%s', exectime_m1='%s', exectime_y1='%s', created_at='%s', updated_at='%s')>" % (
             self.id,
             self.exchange_info_id,
+            self.name,
             self.symbol,
             self.type,
-            self.description,
             self.session,
             self.intermission,
             self.minmov,
             self.pricescale,
-            self.minmove2,
+            self.minmov2,
             self.exectime_t1,
             self.exectime_h1,
             self.exectime_d1,
@@ -161,16 +163,16 @@ class BarDataDaysSchema(Base):
 
 
 if __name__ == "__main__":
-    ed_user = ExchangeInfosSchema(name='台湾期货交易所', symbol='TAIFEX', timezone='Asia/Taipei')
+    ed_user = ExchangeInfosSchema(name='台湾期货交易所', symbol='TAIFEX', desc='台指期', timezone='Asia/Taipei')
     ed_user.exchange_goods_infos = [ExchangeGoodsInfosSchema(
+        name='加权指数期货连续月',
         symbol='FITXN',
         type='future',
-        description='加权指数期货连续月',
         session='1500-1345',
         intermission='0500-0845,1345-1500',
         minmov=1,
         pricescale=1,
-        minmove2=0,
+        minmov2=0,
         exectime_t1='2020-04-23 13:45:00'
     )]
 
